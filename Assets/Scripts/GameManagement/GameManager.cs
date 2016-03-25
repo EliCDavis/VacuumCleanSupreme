@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using VGDC.Character;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 namespace VGDC.GameManagement {
 
@@ -51,12 +52,51 @@ namespace VGDC.GameManagement {
 
 
 		/// <summary>
-		/// Sets the game mode for the manager to notify
+		/// Depending on the level index passed in, this will determine if the level is a map or not
+		/// that a game mode can be played in.
 		/// </summary>
-		/// <param name="gameMode">Game mode.</param>
-		public void setGameMode(GameMode gameMode){
-			clearCharactersInScene ();
-			this.currentModeBeingPlayed = gameMode;
+		/// <returns><c>true</c>, if play game in level was caned, <c>false</c> otherwise.</returns>
+		/// <param name="levelIndex">Level index.</param>
+		public static bool canPlayGameInLevel(int levelIndex){
+
+			//TODO Implement this actually
+
+			return levelIndex > 0;
+		}
+
+
+		/// <summary>
+		/// Sets up the game to be played in the map specified
+		/// </summary>
+		/// <param name="mode">Mode.</param>
+		/// <param name="map">Map.</param>
+		public void playGame(GameModeType mode, MapType map){
+
+			Debug.Log ("about to load scene");
+
+			switch(map){
+
+			case MapType.Prototype:
+				SceneManager.LoadScene ("PrototypeMap", LoadSceneMode.Single);		
+				break;
+
+			}
+
+			Debug.Log ("Scene loaded");
+
+			GameObject container = new GameObject ("_SCRIPTS_");
+			Object.DontDestroyOnLoad (container);
+
+			switch(mode){
+
+			case GameModeType.ProtectTheQueen:
+				
+				currentModeBeingPlayed = container.AddComponent<ProtectTheQueen.ProtectTheQueenModeBehavior> ();
+				break;
+
+			}
+
+
 		}
 
 
@@ -157,6 +197,24 @@ namespace VGDC.GameManagement {
 
 		}
 
+
+		public void notifyBunnyJumpAction(BunnyBehavior bunny){
+
+			if (currentModeBeingPlayed != null) {
+				currentModeBeingPlayed.onBunnyJumpAction (bunny);
+			}
+
+		}
+
+
+		public void notifyBunnyTrapAction(BunnyBehavior bunny){
+
+			if (currentModeBeingPlayed != null) {
+				currentModeBeingPlayed.onBunnyTrapAction (bunny);
+			}
+
+		}
+			
 
 		/// <summary>
 		/// Private constructor garunteeing only the class can initialize an instance of itself

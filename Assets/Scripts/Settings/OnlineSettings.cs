@@ -97,14 +97,19 @@ namespace VGDC.Settings {
 			// Load in the new recording
 			XmlSerializer serializer = new XmlSerializer (typeof(OnlineSettings));
 
-			using (FileStream fileStream = new FileStream("Storage/OnlineSettings.xml", FileMode.Open)) 
-			{
-				OnlineSettings result = (OnlineSettings) serializer.Deserialize(fileStream);
-				fileStream.Close ();
-				return result;
+			try{
+				using (FileStream fileStream = new FileStream("Storage/OnlineSettings.xml", FileMode.Open)) 
+				{
+					OnlineSettings result = (OnlineSettings) serializer.Deserialize(fileStream);
+					fileStream.Close ();
+					currentlyLoading = false;
+					return result;
+				}
+			} catch{
+				currentlyLoading = false;
+				return null;
 			}
 
-			currentlyLoading = false;
 
 		}
 

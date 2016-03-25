@@ -3,19 +3,33 @@ using System.Collections;
 using VGDC.Settings;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Photon;
 
 namespace VGDC.GameManagement.NetworkingLobby {
 
-	public class NetworkingLobbyBehavior : MonoBehaviour {
+	public class NetworkingLobbyBehavior : Photon.MonoBehaviour {
 
 		[SerializeField]
 		private Image profilePic;
 
+
 		[SerializeField]
 		private Text onlineName;
 
+
 		[SerializeField]
 		private GameObject editPlayerPanel;
+
+		[SerializeField]
+		private GameObject roomListingsPanel;
+
+		[SerializeField]
+		private GameObject roomPrefab;
+
+		/// <summary>
+		/// The time in seconds of when the last room refresh occured
+		/// </summary>
+		private float lastRefreshTime = 0f;
 
 
 		/// <summary>
@@ -58,6 +72,51 @@ namespace VGDC.GameManagement.NetworkingLobby {
 			SceneManager.LoadScene (SceneManager.GetActiveScene().name);
 		}
 
+		public void OnPhotonPlayerConnected(PhotonPlayer other)
+		{
+			Debug.Log( "OnPhotonPlayerConnected() " + other.name ); // not seen if you're the player connecting
+		}
+
+
+		public void OnJoinedLobby(){
+
+			refreshRoomsAvailable ();
+
+		}
+
+
+		/// <summary>
+		/// Refreshs the rooms available.
+		/// </summary>
+		public void refreshRoomsAvailable(){
+			
+			lastRefreshTime = Time.time;
+
+			// Destroy Current Room listings
+			for (int i = 0; i < roomListingsPanel.transform.childCount; i++) {
+				Destroy (roomListingsPanel.transform.GetChild(i));
+			}
+
+			RoomInfo[] rooms = PhotonNetwork.GetRoomList();
+
+			for (int i = 0; i < rooms.Length; i++) {
+			
+			}
+
+		}
+
+
+		public void Update(){
+
+			// how often the page refreshes
+			float refreshRate = 2f;
+
+			// If it's time to do a refresh
+			if (lastRefreshTime + refreshRate < Time.time) {
+				refreshRoomsAvailable ();
+			}
+
+		}
 
 	}
 

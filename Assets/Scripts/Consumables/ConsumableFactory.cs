@@ -56,6 +56,9 @@ namespace VGDC.Consumables {
 			case ConsumableType.Battery:
 				return Resources.Load<GameObject> ("Consumables/Battery");
 
+			case ConsumableType.Trap:
+				return Resources.Load<GameObject> ("Consumables/Trap");
+
 			default:
 				return null;
 
